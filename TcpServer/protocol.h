@@ -8,6 +8,27 @@
 
 typedef unsigned int uint;
 
+
+#define REGIST_OK "regist ok"
+#define REGIST_FAILED "regist failed: name existed"
+
+enum ENUM_MSG_TYPE
+{
+    ENUM_MSG_TYPE_MIN=0,
+    ENUM_MSG_TYPE_REGIST_REQUEST,   //注册请求
+    ENUM_MSG_TYPE_REGIST_RESPOND,    //注册回复
+
+    // ENUM_MSG_TYPE_RREQUESE,
+    // ENUM_MSG_TYPE_RESPOND,
+    // ENUM_MSG_TYPE_RREQUESE,
+    // ENUM_MSG_TYPE_RESPOND,
+    // ENUM_MSG_TYPE_RREQUESE,
+    // ENUM_MSG_TYPE_RESPOND,
+
+    ENUM_MSG_TYPE_MAX=0x00ffffff   //最大占32位
+};
+
+
 struct PDU
 {
     uint uiPDULen;         //总的协议数据单元大小

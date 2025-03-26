@@ -38,3 +38,14 @@ OpeDB::~OpeDB()
 {
     m_db.close();      //关闭数据库
 }
+
+bool OpeDB::handleRegist(const char *name, const char *pwd)
+{
+    if(NULL == name || NULL == pwd)
+    {
+        return false;
+    }
+    QString data = QString("insert into usrInfo(name, pwd) values(\'%1\',\'%2\')").arg(name).arg(pwd);
+    QSqlQuery query;
+    return query.exec(data);
+}

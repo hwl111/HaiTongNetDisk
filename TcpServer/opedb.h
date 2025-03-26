@@ -15,6 +15,8 @@ public:
     void init();                 //初始化时连接数据库
     ~OpeDB();
 
+    bool handleRegist(const char *name, const char *pwd);         //处理注册
+
 signals:
 
 public slots:

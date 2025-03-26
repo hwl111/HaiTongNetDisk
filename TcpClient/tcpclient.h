@@ -22,6 +22,7 @@ public:
 
 public slots:
     void showConnect();
+    void recvMsg();        //接收数据
 
 private slots:
 //    void on_pushButton_clicked();
