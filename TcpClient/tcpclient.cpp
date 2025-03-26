@@ -50,6 +50,7 @@ void TcpCLient::showConnect()
     QMessageBox::information(this, "连接服务器", "连接服务器成功");
 }
 
+#if 0
 void TcpCLient::on_pushButton_clicked()
 {
     //发送的信号槽
@@ -68,5 +69,34 @@ void TcpCLient::on_pushButton_clicked()
     {
         QMessageBox::warning(this, "信息发送", "发送信息不能为空");
     }
+}
+#endif
+
+//登录
+void TcpCLient::on_login_pb_clicked()
+{
+
+}
+
+//注册
+void TcpCLient::on_regist_pb_clicked()
+{
+    //获取输入的用户名和密码
+    QString strName = ui->name_le->text();
+    QString strPwd = ui->pwd_le->text();
+    if(!strName.isEmpty() && !strPwd.isEmpty())
+    {
+
+    }
+    else
+    {
+        QMessageBox::critical(this, "注册", "注册失败:用户名与密码不能为空");
+    }
+}
+
+//注销
+void TcpCLient::on_cancel_pb_clicked()
+{
+
 }
 
