@@ -75,6 +75,18 @@ void TcpCLient::recvMsg()
         }
         break;
     }
+    case ENUM_MSG_TYPE_LOGIN_RESPOND:           //登录请求
+    {
+        if(0 == strcmp(pdu->caData, LOGIN_OK))
+        {
+            QMessageBox::information(this, "登录", LOGIN_OK);
+        }
+        else if(0 == strcmp(pdu->caData, LOGIN_FAILED))
+        {
+            QMessageBox::warning(this, "登录", LOGIN_FAILED);
+        }
+        break;
+    }
     default:
         break;
     }
@@ -108,7 +120,23 @@ void TcpCLient::on_pushButton_clicked()
 //登录
 void TcpCLient::on_login_pb_clicked()
 {
-
+    //获取输入的用户名和密码
+    QString strName = ui->name_le->text();
+    QString strPwd = ui->pwd_le->text();
+    if(!strName.isEmpty() && !strPwd.isEmpty())
+    {
+        PDU *pdu = mkPDU(0);
+        pdu->uiMsgType = ENUM_MSG_TYPE_LOGIN_REQUEST;
+        strncpy(pdu->caData, strName.toStdString().c_str(), 32);  //拷贝用户名
+        strncpy(pdu->caData+32, strPwd.toStdString().c_str(), 32);//拷贝密码
+        m_tcpSocket.write((char*)pdu, pdu->uiPDULen);         //发送
+        free(pdu);
+        pdu = NULL;
+    }
+    else
+    {
+        QMessageBox::critical(this, "登录", "登录失败:用户名与密码不能为空");
+    }
 }
 
 //注册

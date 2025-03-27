@@ -16,6 +16,7 @@ public:
     ~OpeDB();
 
     bool handleRegist(const char *name, const char *pwd);         //处理注册
+    bool handleLogin(const char *name, const char *pwd);          //处理登录
 
 signals:
 

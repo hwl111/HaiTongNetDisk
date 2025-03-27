@@ -45,7 +45,32 @@ bool OpeDB::handleRegist(const char *name, const char *pwd)
     {
         return false;
     }
+    //插入数据库
     QString data = QString("insert into usrInfo(name, pwd) values(\'%1\',\'%2\')").arg(name).arg(pwd);
     QSqlQuery query;
     return query.exec(data);
+}
+
+bool OpeDB::handleLogin(const char *name, const char *pwd)
+{
+    if(NULL == name || NULL == pwd)
+    {
+        return false;
+    }
+    //查询数据库
+    QString data = QString("select * from usrInfo where name=\'%1\' and pwd=\'%2\' and online=0").arg(name).arg(pwd);
+    QSqlQuery query;
+    query.exec(data);
+    if(query.next())
+    {
+        //登陆成功,修改online的值为1
+        QString data = QString("update usrInfo set online=1 where name=\'%1\' and pwd=\'%2\'").arg(name).arg(pwd);
+        QSqlQuery query;
+        query.exec(data);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
