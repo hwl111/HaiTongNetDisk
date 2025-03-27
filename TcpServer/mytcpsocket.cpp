@@ -4,6 +4,13 @@ MyTcpSocket::MyTcpSocket()
 {
     connect(this, SIGNAL(readyRead())
             , this, SLOT(recvMsg()));      //关联recvMsg()
+    connect(this, SIGNAL(disconnected())
+            ,this, SLOT(client_close()));  //只要断开连接就调用client_close()
+}
+
+QString MyTcpSocket::getName()
+{
+    return m_strName;
 }
 
 void MyTcpSocket::recvMsg()
@@ -50,6 +57,7 @@ void MyTcpSocket::recvMsg()
         if(ret)
         {
             strcpy(respdu->caData, LOGIN_OK);
+            m_strName = caName;                      //记录登录的名字
         }
         else
         {
@@ -63,11 +71,12 @@ void MyTcpSocket::recvMsg()
     default:
         break;
     }
-
-    // char caName[32] = {'\0'};
-    // char caPwd[32] = {'\0'};
-    // strncpy(caName, pdu->caData, 32);
-    // strncpy(caPwd, pdu->caData+32, 32);
     free(pdu);
     pdu = NULL;
+}
+
+void MyTcpSocket::client_close()
+{
+    OpeDB::getInstance().handleOffline(m_strName.toStdString().c_str());
+    emit offline(this);
 }
