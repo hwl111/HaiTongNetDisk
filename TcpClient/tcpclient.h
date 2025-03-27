@@ -22,9 +22,16 @@ public:
 
 public slots:
     void showConnect();
+    void recvMsg();        //接收数据
 
 private slots:
-    void on_pushButton_clicked();
+//    void on_pushButton_clicked();
+
+    void on_login_pb_clicked();
+
+    void on_regist_pb_clicked();
+
+    void on_cancel_pb_clicked();
 
 private:
     Ui::TcpCLient *ui;
