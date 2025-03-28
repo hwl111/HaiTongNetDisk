@@ -13,6 +13,7 @@ class OpeWidget : public QWidget
     Q_OBJECT
 public:
     explicit OpeWidget(QWidget *parent = nullptr);
+    static OpeWidget &getInstance();
 
 signals:
 

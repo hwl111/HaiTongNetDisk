@@ -80,6 +80,7 @@ void TcpCLient::recvMsg()
         if(0 == strcmp(pdu->caData, LOGIN_OK))
         {
             QMessageBox::information(this, "登录", LOGIN_OK);
+            OpeWidget::getInstance().show();
         }
         else if(0 == strcmp(pdu->caData, LOGIN_FAILED))
         {

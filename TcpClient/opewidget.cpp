@@ -23,3 +23,9 @@ OpeWidget::OpeWidget(QWidget *parent)
     connect(m_pListW, SIGNAL(currentRowChanged(int))
             , m_pSW, SLOT(setCurrentIndex(int)));
 }
+
+OpeWidget &OpeWidget::getInstance()
+{
+    static OpeWidget instance;  //参数静态大的操作界面对象
+    return instance;
+}

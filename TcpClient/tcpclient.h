@@ -5,6 +5,7 @@
 #include <QFile>                 //文件操作
 #include<QTcpSocket>             //连接服务器和收发服务器数据
 #include"protocol.h"
+#include"opewidget.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class TcpCLient;
