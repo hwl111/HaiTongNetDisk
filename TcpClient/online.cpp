@@ -20,6 +20,7 @@ void Online::showUsr(PDU *pdu)
         return;
     }
     char caTmp[32];   //临时数组用于存储信息
+    ui->online_lw->clear(); // 先清空列表,避免重复显示
     uint uiSize = pdu->uiMSgLen/32;  //消息个数
     for(uint i=0;i<uiSize;i++)
     {
