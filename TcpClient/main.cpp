@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
     // Online w;
     // w.show();
 
-    TcpCLient w;
-    w.show();
-
+    // TcpCLient w;
+    // w.show();
+    TcpCLient::grtInstance().show();   //用单例产生
     // Friend w;
     // w.show();
 

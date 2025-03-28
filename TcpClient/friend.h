@@ -15,6 +15,7 @@ class Friend : public QWidget
     Q_OBJECT
 public:
     explicit Friend(QWidget *parent = nullptr);
+    void showALLOnlineUsr(PDU *pdu);              //显示在线用户
 
 private:
     QTextEdit *m_pShowMsgTe;             //显示信息

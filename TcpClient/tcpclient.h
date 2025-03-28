@@ -21,6 +21,9 @@ public:
     ~TcpCLient();
     void loadConfig();   //加载配置文件
 
+    static TcpCLient &grtInstance();
+    QTcpSocket &getTcpSocket();
+
 public slots:
     void showConnect();
     void recvMsg();        //接收数据

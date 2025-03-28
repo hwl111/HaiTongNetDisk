@@ -13,7 +13,7 @@ QString MyTcpSocket::getName()
     return m_strName;
 }
 
-void MyTcpSocket::recvMsg()
+void MyTcpSocket::recvMsg()  //接收数据
 {
     qDebug()<<this->bytesAvailable();
     uint uiPDULen = 0;
@@ -66,6 +66,26 @@ void MyTcpSocket::recvMsg()
         write((char*)respdu, respdu->uiPDULen);         //发送
         free(respdu);
         respdu = NULL;
+        break;
+    }
+
+    case ENUM_MSG_TYPE_ALL_ONLINE_REQUEST:
+    {
+        QStringList ret = OpeDB::getInstance().handleALLOnline();
+
+        uint uiMsgLen = ret.size()*32;  //消息的长度
+        PDU *respdu = mkPDU(uiMsgLen);
+        respdu->uiMsgType = ENUM_MSG_TYPE_ALL_ONLINE_RESPOND;
+        for(int i=0;i<ret.size();i++)
+        {
+            //拷贝用户名
+            memcpy((char*)(respdu->caMsg)+i*32, ret.at(i).toStdString().c_str(),ret.at(i).size());
+        }
+        //发送pdu给客户端
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+
         break;
     }
     default:

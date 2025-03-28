@@ -48,6 +48,17 @@ void TcpCLient::loadConfig()
     }
 }
 
+TcpCLient &TcpCLient::grtInstance()
+{
+    static TcpCLient instance;
+    return instance;
+}
+
+QTcpSocket &TcpCLient::getTcpSocket()
+{
+    return m_tcpSocket;
+}
+
 void TcpCLient::showConnect()
 {
     QMessageBox::information(this, "连接服务器", "连接服务器成功");
@@ -87,6 +98,11 @@ void TcpCLient::recvMsg()
         {
             QMessageBox::warning(this, "登录", LOGIN_FAILED);
         }
+        break;
+    }
+    case ENUM_MSG_TYPE_ALL_ONLINE_RESPOND:
+    {
+        OpeWidget::getInstance().getFriend()->showALLOnlineUsr(pdu);
         break;
     }
     default:

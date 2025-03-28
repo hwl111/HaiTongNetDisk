@@ -29,3 +29,8 @@ OpeWidget &OpeWidget::getInstance()
     static OpeWidget instance;  //参数静态大的操作界面对象
     return instance;
 }
+
+Friend *OpeWidget::getFriend()
+{
+    return m_pFriend;
+}
