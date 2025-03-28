@@ -15,6 +15,11 @@ typedef unsigned int uint;
 #define LOGIN_OK "login ok"
 #define LOGIN_FAILED "login failed: name error or pwd error or region"
 
+#define SEARCH_USR_NO "no such people"
+#define SEARCH_USR_ONLINE "online"
+#define SEARCG_USR_OFFLINE "offline"
+
+
 enum ENUM_MSG_TYPE
 {
     ENUM_MSG_TYPE_MIN=0,

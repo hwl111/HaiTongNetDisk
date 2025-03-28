@@ -16,6 +16,7 @@ class Friend : public QWidget
 public:
     explicit Friend(QWidget *parent = nullptr);
     void showALLOnlineUsr(PDU *pdu);              //显示在线用户
+    QString m_strSearchName;             //保存查找用户名字
 
 private:
     QTextEdit *m_pShowMsgTe;             //显示信息
@@ -31,10 +32,13 @@ private:
     QPushButton *m_pPrivateChatPB;       //私聊
 
     Online *m_pOnline;
+
+
 signals:
 
 public slots:
     void showOnline();                    //用于显示在线用户的信号槽
+    void searchUsr();                     //查找用户信号槽
 };
 
 #endif // FRIEND_H

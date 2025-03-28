@@ -88,6 +88,31 @@ void MyTcpSocket::recvMsg()  //接收数据
 
         break;
     }
+
+    case ENUM_MSG_TYPE_SEARCH_USR_REQUEST:
+    {
+        int ret = OpeDB::getInstance().handleSearchUsr(pdu->caData);
+        PDU *respdu = mkPDU(0);
+        respdu->uiMsgType = ENUM_MSG_TYPE_SEARCH_USR_RESPOND;
+        if(ret == -1)
+        {
+            strcpy(respdu->caData, SEARCH_USR_NO);
+        }
+        else if(ret == 1)
+        {
+            strcpy(respdu->caData, SEARCH_USR_ONLINE);
+        }
+        else if(ret == 0)
+        {
+            strcpy(respdu->caData, SEARCG_USR_OFFLINE);
+        }
+        //发送pdu给客户端
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
+
     default:
         break;
     }

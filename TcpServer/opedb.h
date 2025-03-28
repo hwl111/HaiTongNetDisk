@@ -19,6 +19,7 @@ public:
     bool handleLogin(const char *name, const char *pwd);          //处理登录
     void handleOffline(const char *name);                         //处理下线
     QStringList handleALLOnline();                                //处理在线用户
+    int handleSearchUsr(const char * name);                       //查找用户
 
 signals:
 
