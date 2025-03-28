@@ -81,6 +81,7 @@ void TcpCLient::recvMsg()
         {
             QMessageBox::information(this, "登录", LOGIN_OK);
             OpeWidget::getInstance().show();
+            this->hide();   //隐藏登陆界面
         }
         else if(0 == strcmp(pdu->caData, LOGIN_FAILED))
         {
