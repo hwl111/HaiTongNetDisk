@@ -23,6 +23,7 @@ public:
 
     static TcpCLient &grtInstance();
     QTcpSocket &getTcpSocket();
+    QString loginName();        //获得登录用户名
 
 public slots:
     void showConnect();
@@ -44,5 +45,7 @@ private:
 
     //连接服务器和服务器交互
     QTcpSocket m_tcpSocket;
+
+    QString m_strLoginName;          //保存登录的用户名
 };
 #endif // TCPCLIENT_H

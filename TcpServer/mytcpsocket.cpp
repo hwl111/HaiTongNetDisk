@@ -1,5 +1,6 @@
 #include "mytcpsocket.h"
 #include <QDebug>
+#include"mytcpserver.h"
 MyTcpSocket::MyTcpSocket()
 {
     connect(this, SIGNAL(readyRead())
@@ -112,7 +113,83 @@ void MyTcpSocket::recvMsg()  //接收数据
         respdu = NULL;
         break;
     }
+    case ENUM_MSG_TYPE_ADD_FRIEND_RREQUEST:
+    {
+        char caPerName[32] = {'\0'};
+        char caName[32] = {'\0'};
+        strncpy(caPerName, pdu->caData, 32);
+        strncpy(caName, pdu->caData+32, 32);
+        int ret = OpeDB::getInstance().handleAddFriend(caPerName, caName);
+        PDU *respdu = NULL;
+        if(ret == -1)
+        {
+            respdu  = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData, UNKNOW_ERROR);
+        }
+        else if(ret == 0)
+        {
+            respdu  = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData, EXISTED_FRIEND);
+        }
+        else if(ret == 1)
+        {
+            MyTcpServer::getInstance().resend(caPerName, pdu);
+            respdu = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData, ADD_FRIEND_OK); // 表示加好友请求已发送
+        }
+        else if(ret == 2)
+        {
+            respdu  = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData, ADD_FRIEND_OFFLINE);
+        }
+        else if(ret == 3)
+        {
+            respdu  = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData, ADD_FRIEND_NOEXIST);
+        }
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
+    case ENUM_MSG_TYPE_ADD_FRIEND_AGREE:
+    {
+        char addedName[32] = {'\0'};
+        char sourceName[32] = {'\0'};
+        // 拷贝读取的信息
+        strncpy(addedName, pdu->caData, 32);
+        strncpy(sourceName, pdu->caData + 32, 32);
+        PDU *respdu = mkPDU(0);
+        OpeDB::getInstance().handleAddFriendAgree(addedName, sourceName);
+        respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_AGREE;
+        // 将新的好友关系信息写入数据库
 
+        // 服务器需要转发给发送好友请求方其被同意的消息
+        MyTcpServer::getInstance().resend(sourceName, pdu);
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
+    case ENUM_MSG_TYPE_ADD_FRIEND_REFUSE:
+    {
+        char sourceName[32] = {'\0'};
+            // 拷贝读取的信息
+        strncpy(sourceName, pdu -> caData + 32, 32);
+        PDU *respdu = mkPDU(0);
+        respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_REFUSE;
+        // 服务器需要转发给发送好友请求方其被拒绝的消息
+        MyTcpServer::getInstance().resend(sourceName, pdu);
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
     default:
         break;
     }

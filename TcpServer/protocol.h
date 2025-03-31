@@ -20,6 +20,12 @@ typedef unsigned int uint;
 #define SEARCG_USR_OFFLINE "offline"
 
 
+#define UNKNOW_ERROR "unknow error"
+#define EXISTED_FRIEND "friend exist"
+#define ADD_FRIEND_OFFLINE "usr not online"
+#define ADD_FRIEND_NOEXIST "usr not exist"
+#define ADD_FRIEND_OK "Friend request has been sent"
+
 enum ENUM_MSG_TYPE
 {
     ENUM_MSG_TYPE_MIN=0,
@@ -34,6 +40,12 @@ enum ENUM_MSG_TYPE
 
     ENUM_MSG_TYPE_SEARCH_USR_REQUEST,  //搜索用户请求
     ENUM_MSG_TYPE_SEARCH_USR_RESPOND,   //搜索用户回复
+
+    ENUM_MSG_TYPE_ADD_FRIEND_RREQUEST,   //加好友请求
+    ENUM_MSG_TYPE_ADD_FRIEND_RESPOND,    //加好友回复
+
+    ENUM_MSG_TYPE_ADD_FRIEND_AGREE,     //同意加好友
+    ENUM_MSG_TYPE_ADD_FRIEND_REFUSE,     //不同意加好友
 
     // ENUM_MSG_TYPE_RREQUESE,
     // ENUM_MSG_TYPE_RESPOND,

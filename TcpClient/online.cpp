@@ -1,5 +1,6 @@
 #include "online.h"
 #include "ui_online.h"
+#include"tcpclient.h"
 
 Online::Online(QWidget *parent)
     : QWidget(parent)
@@ -62,3 +63,21 @@ void Online::showUsr(PDU *pdu)
         }
     }
 }
+
+void Online::on_addFriend_pb_clicked()
+{
+    //加好友
+    QListWidgetItem *pItem = ui->online_lw->currentItem();
+    QString strPerUsrName = pItem->text();                 //获得对方用户名
+    QString strLoginName =  TcpCLient::grtInstance().loginName();  //获得登录用户名
+    PDU *pdu = mkPDU(0);
+    pdu->uiMsgType =ENUM_MSG_TYPE_ADD_FRIEND_RREQUEST;
+
+    memcpy(pdu->caData, strPerUsrName.toStdString().c_str(), strPerUsrName.size());
+    memcpy(pdu->caData+32, strLoginName.toStdString().c_str(), strLoginName.size());
+
+    TcpCLient::grtInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen); //发送
+    free(pdu);
+    pdu = NULL;
+}
+

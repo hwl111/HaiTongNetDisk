@@ -17,6 +17,9 @@ public:
 
     void showUsr(PDU * pdu);      //显示用户
 
+private slots:
+    void on_addFriend_pb_clicked();
+
 private:
     Ui::Online *ui;
 };

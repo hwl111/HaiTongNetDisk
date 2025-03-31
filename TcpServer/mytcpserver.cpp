@@ -22,6 +22,25 @@ void MyTcpServer::incomingConnection(qintptr socketDescriptor)
             , this, SLOT(deleteSocket(MyTcpSocket*)));
 }
 
+void MyTcpServer::resend(const char *pername, PDU *pdu)
+{
+    if(NULL == pername || NULL == pdu)
+    {
+        return;
+    }
+    // 查找目标用户名的Socket
+    QString strName = pername;
+    for(int i = 0; i < m_tcpSocketList.size(); i++)
+    {
+        if(strName == m_tcpSocketList.at(i)->getName()) // 查找到
+        {
+            m_tcpSocketList.at(i)->write((char*)pdu, pdu -> uiPDULen); // 转发消息
+            break;
+        }
+    }
+    return;
+}
+
 void MyTcpServer::deleteSocket(MyTcpSocket *mysocket)
 {
     QList<MyTcpSocket*>::iterator iter = m_tcpSocketList.begin();
