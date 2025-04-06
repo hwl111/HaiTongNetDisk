@@ -42,6 +42,7 @@ public slots:
     void searchUsr();                     //查找用户信号槽
     void flushFriend();                   //刷新好友列表
     void delFriend();                     //删除好友
+    void privateChat();                   //私聊
 };
 
 #endif // FRIEND_H

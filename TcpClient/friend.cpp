@@ -3,6 +3,8 @@
 #include"tcpclient.h"
 #include<QInputDialog>  //输入数据
 #include<QDebug>
+#include"privatechat.h"
+#include<QMessageBox>
 
 Friend::Friend(QWidget *parent)
     : QWidget{parent}
@@ -56,6 +58,8 @@ Friend::Friend(QWidget *parent)
             , this, SLOT(flushFriend()));
     connect(m_pDelFriendPB, SIGNAL(clicked(bool))
             , this, SLOT(delFriend()));
+    connect(m_pPrivateChatPB, SIGNAL(clicked(bool))
+            , this, SLOT(privateChat()));
 }
 
 void Friend::showALLOnlineUsr(PDU *pdu)
@@ -142,5 +146,22 @@ void Friend::delFriend()
         TcpCLient::getInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
         free(pdu);
         pdu = NULL;
+    }
+}
+
+void Friend::privateChat()
+{
+    if(m_pFriendListWidgw->currentItem() != NULL)
+    {
+        QString strChatName = m_pFriendListWidgw->currentItem()->text();
+        PrivateChat::getInstance().setChatName(strChatName);
+        if(PrivateChat::getInstance().isHidden())
+        {
+            PrivateChat::getInstance().show();
+        }
+    }
+    else
+    {
+        QMessageBox::warning(this, "私聊", "请选择私聊对象");
     }
 }
