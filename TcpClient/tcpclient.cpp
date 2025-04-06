@@ -48,7 +48,7 @@ void TcpCLient::loadConfig()
     }
 }
 
-TcpCLient &TcpCLient::grtInstance()
+TcpCLient &TcpCLient::getInstance()
 {
     static TcpCLient instance;
     return instance;
@@ -164,6 +164,19 @@ void TcpCLient::recvMsg()
     case ENUM_MSG_TYPE_FLUSH_FRIEND_RESPOND:
     {
         OpeWidget::getInstance().getFriend()->updataFriendList(pdu);
+        break;
+    }
+    case ENUM_MSG_TYPE_DELETE_FRIEND_REQUEST:
+    {
+        char caName[32] = {'\0'};
+        memcpy(caName, pdu->caData, 32);
+        QMessageBox::information(this, "删除好友", QString("%1 删除你作为他的好友").arg(caName));
+        break;
+    }
+    case ENUM_MSG_TYPE_DELETE_FRIEND_RESPOND:
+    {
+        QMessageBox::information(this, "删除好友", DELETE_FRIEND_OK);
+        break;
     }
     default:
         break;

@@ -41,6 +41,7 @@ public slots:
     void showOnline();                    //用于显示在线用户的信号槽
     void searchUsr();                     //查找用户信号槽
     void flushFriend();                   //刷新好友列表
+    void delFriend();                     //删除好友
 };
 
 #endif // FRIEND_H

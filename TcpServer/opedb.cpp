@@ -173,18 +173,18 @@ int OpeDB::handleAddFriend(const char *pername, const char *name)
 void OpeDB::handleAddfriend(const char *friendName, const char *name)
 {
     // 获取好友id
-    QString strSql = QString("select id from userInfo where name = '%1'").arg(friendName);
+    QString strSql = QString("select id from usrInfo where name = \'%1\'").arg(friendName);
     QSqlQuery query;
     query.exec(strSql);
     query.next();
     int friendId = query.value(0).toInt();
     // 获取登录用户id
-    strSql = QString("select id from userInfo where name = '%1'").arg(name);
+    strSql = QString("select id from usrInfo where name = \'%1\'").arg(name);
     query.exec(strSql);
     query.next();
     int loginId = query.value(0).toInt();
     // 新增好友
-    strSql = QString("insert into friend (id,friendId) values ('%1','%2'), ('%2','%1')").arg(friendId).arg(loginId);
+    strSql = QString("insert into friend (id,friendId) values (\'%1\',\'%2\'), (\'%2\',\'%1\')").arg(friendId).arg(loginId);
     query.exec(strSql);
 }
 
@@ -194,7 +194,7 @@ int OpeDB::getIdByUserName(const char *name)
     {
         return -1;
     }
-    QString data = QString("select id from userInfo where name=\'%1\'").arg(name);
+    QString data = QString("select id from usrInfo where name=\'%1\'").arg(name);
     QSqlQuery query;
     query.exec(data);
     qDebug() << data;
@@ -219,12 +219,10 @@ void OpeDB::handleAddFriendAgree(const char *addedName, const char *sourceName)
     sourceUserId = getIdByUserName(sourceName);
     addedUserId = getIdByUserName(addedName);
     qDebug() << sourceUserId << " " << addedUserId;
-    QString strQuery = QString("insert into friend values(%1, %2) ").arg(sourceUserId).arg(addedUserId);
+    QString strQuery = QString("insert into friend values(\'%1\',\'%2\') ").arg(sourceUserId).arg(addedUserId);
     QSqlQuery query;
     query.exec(strQuery);
     return;
-
-    //qDebug() << "handleAddFriendAgree " << strQuery;
 }
 
 QStringList OpeDB::handleFlushFriend(const char *name)
@@ -251,4 +249,19 @@ QStringList OpeDB::handleFlushFriend(const char *name)
         strFriendList.append(query.value(0).toString());
     }
     return strFriendList;
+}
+
+bool OpeDB::handleDelFriend(const char *name, const char *friendName)
+{
+    if(name == NULL || friendName == NULL)
+    {
+        return false;
+    }
+    QString data = QString("delete from friend where id = (select id from usrInfo where name=\'%1\') and friendId = (select id from usrInfo where name=\'%2\')").arg(name).arg(friendName);
+    QSqlQuery query;
+    query.exec(data);
+
+    data = QString("delete from friend where id = (select id from usrInfo where name=\'%1\') and friendId = (select id from usrInfo where name=\'%2\')").arg(friendName).arg(name);
+    query.exec(data);
+    return true;
 }

@@ -25,6 +25,7 @@ public:
     int getIdByUserName(const char *name);                // 根据用户名获取用户id
     void handleAddFriendAgree(const char *addedName, const char *sourceName); // 处理同意好友申请
     QStringList handleFlushFriend(const char *name); // 处理同意好友申请
+    bool handleDelFriend(const char *name, const char *friendName);         //处理删除好友
 
 
 signals:

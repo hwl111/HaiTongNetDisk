@@ -54,6 +54,8 @@ Friend::Friend(QWidget *parent)
             , this, SLOT(searchUsr()));
     connect(m_pFlushFriendPB, SIGNAL(clicked(bool))
             , this, SLOT(flushFriend()));
+    connect(m_pDelFriendPB, SIGNAL(clicked(bool))
+            , this, SLOT(delFriend()));
 }
 
 void Friend::showALLOnlineUsr(PDU *pdu)
@@ -87,7 +89,7 @@ void Friend::showOnline()
         m_pOnline->show();   //点击在线用户显示
         PDU *pdu = mkPDU(0);
         pdu->uiMsgType = ENUM_MSG_TYPE_ALL_ONLINE_REQUEST;
-        TcpCLient::grtInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
+        TcpCLient::getInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
         free(pdu);
     }
     else
@@ -106,7 +108,7 @@ void Friend::searchUsr()
         memcpy(pdu->caData, m_strSearchName.toStdString().c_str(), m_strSearchName.size());
         pdu->uiMsgType = ENUM_MSG_TYPE_SEARCH_USR_REQUEST;  //查找用户请求
 
-        TcpCLient::grtInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
+        TcpCLient::getInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
         free(pdu);
         pdu = NULL;
     }
@@ -114,12 +116,31 @@ void Friend::searchUsr()
 
 void Friend::flushFriend()
 {
-    QString strName = TcpCLient::grtInstance().loginName();  //获得登录用户名
+    //清空当前显示,避免重复显示的问题
+    m_pFriendListWidgw->clear();
+    QString strName = TcpCLient::getInstance().loginName();  //获得登录用户名
     PDU *pdu = mkPDU(0);
     pdu->uiMsgType = ENUM_MSG_TYPE_FLUSH_FRIEND_REQUEST;
     memcpy(pdu->caData, strName.toStdString().c_str(), strName.size());
 
-    TcpCLient::grtInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
+    TcpCLient::getInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
     free(pdu);
     pdu = NULL;
+}
+
+void Friend::delFriend()
+{
+
+    if(m_pFriendListWidgw->currentItem() != NULL)
+    {
+        QString strFriendName = m_pFriendListWidgw->currentItem()->text();
+        PDU *pdu = mkPDU(0);
+        pdu->uiMsgType = ENUM_MSG_TYPE_DELETE_FRIEND_REQUEST;
+        QString strSelfName = TcpCLient::getInstance().loginName();
+        memcpy(pdu->caData,strSelfName.toStdString().c_str(), strSelfName.size());
+        memcpy(pdu->caData+32,strFriendName.toStdString().c_str(),strFriendName.size());
+        TcpCLient::getInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
+        free(pdu);
+        pdu = NULL;
+    }
 }

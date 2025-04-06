@@ -40,7 +40,8 @@ constexpr auto qt_meta_stringdata_CLASSFriendENDCLASS = QtMocHelpers::stringData
     "showOnline",
     "",
     "searchUsr",
-    "flushFriend"
+    "flushFriend",
+    "delFriend"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -53,7 +54,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSFriendENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -61,11 +62,13 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSFriendENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   32,    2, 0x0a,    1 /* Public */,
-       3,    0,   33,    2, 0x0a,    2 /* Public */,
-       4,    0,   34,    2, 0x0a,    3 /* Public */,
+       1,    0,   38,    2, 0x0a,    1 /* Public */,
+       3,    0,   39,    2, 0x0a,    2 /* Public */,
+       4,    0,   40,    2, 0x0a,    3 /* Public */,
+       5,    0,   41,    2, 0x0a,    4 /* Public */,
 
  // slots: parameters
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -87,6 +90,8 @@ Q_CONSTINIT const QMetaObject Friend::staticMetaObject = { {
         // method 'searchUsr'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'flushFriend'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'delFriend'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -101,6 +106,7 @@ void Friend::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 0: _t->showOnline(); break;
         case 1: _t->searchUsr(); break;
         case 2: _t->flushFriend(); break;
+        case 3: _t->delFriend(); break;
         default: ;
         }
     }
@@ -126,13 +132,13 @@ int Friend::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 4)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }
