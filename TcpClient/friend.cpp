@@ -52,6 +52,8 @@ Friend::Friend(QWidget *parent)
             , this, SLOT(showOnline()));
     connect(m_pSearchUsrPB, SIGNAL(clicked(bool))
             , this, SLOT(searchUsr()));
+    connect(m_pFlushFriendPB, SIGNAL(clicked(bool))
+            , this, SLOT(flushFriend()));
 }
 
 void Friend::showALLOnlineUsr(PDU *pdu)
@@ -61,6 +63,21 @@ void Friend::showALLOnlineUsr(PDU *pdu)
         return;
     }
     m_pOnline->showUsr(pdu);
+}
+
+void Friend::updataFriendList(PDU *pdu)
+{
+    if(pdu == NULL)
+    {
+        return;
+    }
+    uint uiSize = pdu->uiMSgLen/32;
+    char caName[32] = {'\0'};
+    for(uint i =0;i<uiSize; i++)
+    {
+        memcpy(caName, (char*)(pdu->caMsg)+i*32, 32);
+        m_pFriendListWidgw->addItem(caName);
+    }
 }
 
 void Friend::showOnline()
@@ -93,4 +110,16 @@ void Friend::searchUsr()
         free(pdu);
         pdu = NULL;
     }
+}
+
+void Friend::flushFriend()
+{
+    QString strName = TcpCLient::grtInstance().loginName();  //获得登录用户名
+    PDU *pdu = mkPDU(0);
+    pdu->uiMsgType = ENUM_MSG_TYPE_FLUSH_FRIEND_REQUEST;
+    memcpy(pdu->caData, strName.toStdString().c_str(), strName.size());
+
+    TcpCLient::grtInstance().getTcpSocket().write((char *)pdu, pdu->uiPDULen); //发送
+    free(pdu);
+    pdu = NULL;
 }

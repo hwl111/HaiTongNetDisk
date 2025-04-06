@@ -26,6 +26,7 @@ public:
     void handleAddFriendAgree(const char *addedName, const char *sourceName); // 处理同意好友申请
     QStringList handleFlushFriend(const char *name); // 处理同意好友申请
 
+
 signals:
 
 public slots:

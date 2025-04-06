@@ -17,6 +17,7 @@ public:
     explicit Friend(QWidget *parent = nullptr);
     void showALLOnlineUsr(PDU *pdu);              //显示在线用户
     QString m_strSearchName;             //保存查找用户名字
+    void updataFriendList(PDU *pdu);     //刷新好友列表
 
 private:
     QTextEdit *m_pShowMsgTe;             //显示信息
@@ -39,6 +40,7 @@ signals:
 public slots:
     void showOnline();                    //用于显示在线用户的信号槽
     void searchUsr();                     //查找用户信号槽
+    void flushFriend();                   //刷新好友列表
 };
 
 #endif // FRIEND_H

@@ -190,6 +190,23 @@ void MyTcpSocket::recvMsg()  //接收数据
         respdu = NULL;
         break;
     }
+    case ENUM_MSG_TYPE_FLUSH_FRIEND_REQUEST:
+    {
+        char caName[32] = {'\0'};
+        strncpy(caName, pdu->caData, 32);
+        QStringList ret = OpeDB::getInstance().handleFlushFriend(caName);
+        uint uiMsgLen = ret.size()*32;
+        PDU *respdu = mkPDU(uiMsgLen);
+        respdu->uiMsgType = ENUM_MSG_TYPE_FLUSH_FRIEND_RESPOND;
+        for(int i=0; i<ret.size();i++)
+        {
+            memcpy((char*)(respdu->caMsg)+i*32,ret.at(i).toStdString().c_str(), ret.at(i).size());
+        }
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
     default:
         break;
     }
