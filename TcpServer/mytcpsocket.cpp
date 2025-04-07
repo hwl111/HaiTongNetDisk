@@ -234,6 +234,19 @@ void MyTcpSocket::recvMsg()  //接收数据
 
         break;
     }
+    case ENUM_MSG_TYPE_GROUP_CHAT_REQUEST:
+    {
+        char caName[32] = {'\0'};
+        strncpy(caName, pdu->caData, 32);
+        QStringList onlineFriend = OpeDB::getInstance().handleFlushFriend(caName);  //获得在线好友
+        QString tmp;
+        for(int i=0;i<onlineFriend.size();i++)
+        {
+            tmp = onlineFriend.at(i);
+            MyTcpServer::getInstance().resend(tmp.toStdString().c_str(), pdu);
+        }
+        break;
+    }
     default:
         break;
     }

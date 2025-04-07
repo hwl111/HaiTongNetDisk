@@ -18,6 +18,7 @@ public:
     void showALLOnlineUsr(PDU *pdu);              //显示在线用户
     QString m_strSearchName;             //保存查找用户名字
     void updataFriendList(PDU *pdu);     //刷新好友列表
+    void updateGroupMsg(PDU *pdu);       //更新群聊信息
 
 private:
     QTextEdit *m_pShowMsgTe;             //显示信息
@@ -43,6 +44,7 @@ public slots:
     void flushFriend();                   //刷新好友列表
     void delFriend();                     //删除好友
     void privateChat();                   //私聊
+    void groupChat();                     //群聊
 };
 
 #endif // FRIEND_H
