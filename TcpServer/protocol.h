@@ -32,6 +32,13 @@ typedef unsigned int uint;
 #define FILE_NAME_EXIST "file name exist"
 #define CREATE_DIR_OK "create dir succeed"
 
+#define DEL_DIR_OK "delete dir succeed"
+#define DEL_DIR_FAILURED "delete dir failured"
+
+#define RENAME_FILE_OK "rename file succeed"
+#define RENAME_FILE_FAILURED "rename file failured"
+
+
 enum ENUM_MSG_TYPE
 {
     ENUM_MSG_TYPE_MIN=0,
@@ -70,6 +77,12 @@ enum ENUM_MSG_TYPE
 
     ENUM_MSG_TYPE_FLUSH_FILE_REQUEST,   //刷新文件请求
     ENUM_MSG_TYPE_FLUSH_FILE_RESPOND,   //刷新文件回复
+
+    ENUM_MSG_TYPE_DEL_DIR_REQUEST,      //删除目录请求
+    ENUM_MSG_TYPE_DEL_DIR_RESPOND,      //删除目录回复
+
+    ENUM_MSG_TYPE_RENAME_FILE_REQUEST,  //重命名请求
+    ENUM_MSG_TYPE_RENAME_FILE_RESPOND,  //重命名回复
 
     // ENUM_MSG_TYPE_RREQUESE,
     // ENUM_MSG_TYPE_RESPOND,

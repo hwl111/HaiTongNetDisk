@@ -326,6 +326,76 @@ void MyTcpSocket::recvMsg()  //接收数据
         respdu = NULL;
         break;
     }
+    case ENUM_MSG_TYPE_DEL_DIR_REQUEST:
+    {
+        char caName[32] = {'\0'};
+        strcpy(caName, pdu->caData);
+        char *pPath = new char[pdu->uiMSgLen];   //路径长度
+        memcpy(pPath, pdu->caMsg, pdu->uiMSgLen);
+        QString strPath = QString("%1/%2").arg(pPath).arg(caName);
+
+        QFileInfo fileInfo(strPath);
+        bool ret = false;
+        if(fileInfo.isDir())  //如果是文件夹
+        {
+            QDir dir;
+            dir.setPath(strPath);
+            ret = dir.removeRecursively();  //删除文件夹,会删除文件夹所有内容
+        }
+        else if(fileInfo.isFile())  //如果是常规文件
+        {
+            ret = false;
+        }
+        PDU *respdu = NULL;
+        if(ret)
+        {
+            //删除成功
+            respdu = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_DEL_DIR_RESPOND;
+            memcpy(respdu->caData, DEL_DIR_OK, strlen(DEL_DIR_OK));
+        }
+        else
+        {
+            respdu = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_DEL_DIR_RESPOND;
+            memcpy(respdu->caData, DEL_DIR_FAILURED, strlen(DEL_DIR_FAILURED));
+        }
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
+    case ENUM_MSG_TYPE_RENAME_FILE_REQUEST:
+    {
+        char caOldName[32] = {'\0'};
+        char caNewName[32] = {'\0'};
+        strncpy(caOldName, pdu->caData, 32);
+        strncpy(caNewName, pdu->caData+32, 32);
+
+        char *pPath = new char[pdu->uiMSgLen];
+        memcpy(pPath, pdu->caMsg, pdu->uiMSgLen);
+
+        QString strOldPath = QString("%1/%2").arg(pPath).arg(caOldName);
+        QString strNewPath = QString("%1/%2").arg(pPath).arg(caNewName);
+
+        QDir dir;
+        bool ret = dir.rename(strOldPath, strNewPath);    //重命名
+        PDU *respdu = mkPDU(0);
+        respdu->uiMsgType =ENUM_MSG_TYPE_RENAME_FILE_RESPOND;
+        if(ret)
+        {
+            strcpy(respdu->caData, RENAME_FILE_OK);
+        }
+        else
+        {
+            strcpy(respdu->caData, RENAME_FILE_FAILURED);
+        }
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
+
     default:
         break;
     }

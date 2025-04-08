@@ -32,6 +32,8 @@ public slots:
     void createDir();                //创建文件夹
     void flushFile();                //刷新文件
     void updateFileList(const PDU * pdu);         //刷新文件列表
+    void delDir();                                //删除文件夹
+    void renameFile();                            //重命名文件
 
 
 };

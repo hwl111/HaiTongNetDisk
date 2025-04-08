@@ -41,6 +41,10 @@ Book::Book(QWidget *parent)
             , this, SLOT(createDir()));
     connect(m_pFlushFilePB, SIGNAL(clicked(bool))
             , this, SLOT(flushFile()));
+    connect(m_pDelDirPB, SIGNAL(clicked(bool))
+            , this, SLOT(delDir()));
+    connect(m_pRenamePB, SIGNAL(clicked(bool))
+            , this, SLOT(renameFile()));
 }
 
 void Book::createDir()   //创建文件夹
@@ -110,5 +114,56 @@ void Book::updateFileList(const PDU *pdu)
         }
         pItem->setText(pFileInfo->caFileName);   //设置名字
         m_pBookListW->addItem(pItem);
+    }
+}
+
+void Book::delDir()
+{
+    QString strCurPath = TcpCLient::getInstance().curPath();  //获得当前路径
+    QListWidgetItem *pItem =  m_pBookListW->currentItem();
+    if(pItem == NULL)
+    {
+        QMessageBox::warning(this, "删除文件","请选择要删除的文件");
+    }
+    else
+    {
+        QString strDelName = pItem->text();   //获得文件名
+        PDU *pdu = mkPDU(strCurPath.size() + 1);
+        pdu->uiMsgType = ENUM_MSG_TYPE_DEL_DIR_REQUEST;
+        strncpy(pdu->caData, strDelName.toStdString().c_str(), strDelName.size());   //拷贝要删除的文件夹名
+        memcpy((char*)pdu->caMsg,strCurPath.toStdString().c_str(), strCurPath.size()); //拷贝路径
+        TcpCLient::getInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen);      //发送给服务器
+        free(pdu);
+        pdu = NULL;
+    }
+}
+
+void Book::renameFile()
+{
+    QString strCurPath = TcpCLient::getInstance().curPath();  //获得当前路径
+    QListWidgetItem *pItem =  m_pBookListW->currentItem();
+    if(pItem == NULL)
+    {
+        QMessageBox::warning(this, "重命名文件","请选择要重命名的文件");
+    }
+    else
+    {
+        QString strOldName = pItem->text();   //获得旧的文件名
+        QString strNewName = QInputDialog::getText(this, "重命名文件", "请输入新的文件名");
+        if(!strNewName.isEmpty())
+        {
+            PDU *pdu = mkPDU(strCurPath.size()+1);
+            pdu->uiMsgType = ENUM_MSG_TYPE_RENAME_FILE_REQUEST;
+            strncpy(pdu->caData, strOldName.toStdString().c_str(), strOldName.size());  //拷贝旧文件名
+            strncpy(pdu->caData+32, strNewName.toStdString().c_str(), strNewName.size());  //拷贝新文件名
+            memcpy((char*)pdu->caMsg, strCurPath.toStdString().c_str(), strCurPath.size()); //拷贝路径
+            TcpCLient::getInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen);      //发送给服务器
+            free(pdu);
+            pdu = NULL;
+        }
+        else
+        {
+            QMessageBox::warning(this,"重命名文件", "新文件名不能为空");
+        }
     }
 }
