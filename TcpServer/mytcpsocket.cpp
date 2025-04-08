@@ -1,6 +1,8 @@
 #include "mytcpsocket.h"
 #include <QDebug>
 #include"mytcpserver.h"
+#include<QDir>
+
 MyTcpSocket::MyTcpSocket()
 {
     connect(this, SIGNAL(readyRead())
@@ -36,6 +38,8 @@ void MyTcpSocket::recvMsg()  //接收数据
         if(ret)
         {
             strcpy(respdu->caData, REGIST_OK);
+            QDir dir;
+            dir.mkdir(QString("./%1").arg(caName));     //注册成功时用注册的用户名创建一个文件夹
         }
         else
         {
@@ -247,6 +251,44 @@ void MyTcpSocket::recvMsg()  //接收数据
         }
         break;
     }
+    case ENUM_MSG_TYPE_CREATE_DIR_REQUEST:   //创建文件夹
+    {
+        QDir dir;
+        QString strCurPath = QString("%1").arg((char*)(pdu->caMsg));
+        bool ret = dir.exists(QString(strCurPath));
+        PDU *respdu = NULL;
+        if(ret)   //当前目录存在
+        {
+            char caNewDir[32] = {'\0'};
+            memcpy(caNewDir, pdu->caData+32, 32);
+            QString strNewPath = strCurPath + "/" + caNewDir;  //拼接新路径
+            ret = dir.exists(strNewPath);
+            if(ret)   //创建的文件名已存在
+            {
+                respdu = mkPDU(0);
+                respdu->uiMsgType = ENUM_MSG_TYPE_CREATE_DIR_RESPOND;
+                strcpy(respdu->caData, FILE_NAME_EXIST);
+            }
+            else
+            {
+                dir.mkdir(strNewPath);  //创建文件夹
+                respdu = mkPDU(0);
+                respdu->uiMsgType = ENUM_MSG_TYPE_CREATE_DIR_RESPOND;
+                strcpy(respdu->caData, CREATE_DIR_OK);
+            }
+        }
+        else
+        {
+            respdu = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_CREATE_DIR_RESPOND;
+            strcpy(respdu->caData, DIR_NO_EXIST);
+        }
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
+
     default:
         break;
     }

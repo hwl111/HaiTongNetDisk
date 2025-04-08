@@ -6,6 +6,7 @@
 #include<QPushButton>
 #include<QHBoxLayout>
 #include<QVBoxLayout>
+#include"protocol.h"
 
 class Book : public QWidget
 {
@@ -26,6 +27,11 @@ private:
     QPushButton *m_pDownLoadPB;      //下载文件
     QPushButton *m_pDelFilePB;       //删除文件
     QPushButton *m_pShareFilePB;     //分享文件
+
+public slots:
+    void createDir();                //创建文件夹
+
+
 };
 
 #endif // BOOK_H

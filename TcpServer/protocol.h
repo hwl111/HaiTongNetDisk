@@ -28,6 +28,9 @@ typedef unsigned int uint;
 
 #define DELETE_FRIEND_OK "delete friend succeed"
 
+#define DIR_NO_EXIST "cur dir not exist"
+#define FILE_NAME_EXIST "file name exist"
+#define CREATE_DIR_OK "create dir succeed"
 
 enum ENUM_MSG_TYPE
 {
@@ -61,6 +64,9 @@ enum ENUM_MSG_TYPE
 
     ENUM_MSG_TYPE_GROUP_CHAT_REQUEST,  //群聊请求
     ENUM_MSG_TYPE_GROUP_CHAT_RESPOND,  //群聊回复
+
+    ENUM_MSG_TYPE_CREATE_DIR_REQUEST,   //创建文件夹请求
+    ENUM_MSG_TYPE_CREATE_DIR_RESPOND,   //创建文件夹回复
 
     // ENUM_MSG_TYPE_RREQUESE,
     // ENUM_MSG_TYPE_RESPOND,

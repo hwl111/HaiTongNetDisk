@@ -27,14 +27,18 @@ typedef unsigned int uint;
 
 #define DELETE_FRIEND_OK "delete friend succeed"
 
+#define DIR_NO_EXIST "cur dir not exist"
+#define FILE_NAME_EXIST "file name exist"
+#define CREATE_DIR_OK "create dir succeed"
+
 enum ENUM_MSG_TYPE
 {
     ENUM_MSG_TYPE_MIN=0,
-    ENUM_MSG_TYPE_REGIST_REQUEST,    //注册请求
-    ENUM_MSG_TYPE_REGIST_RESPOND,    //注册回复
+    ENUM_MSG_TYPE_REGIST_REQUEST,      //注册请求
+    ENUM_MSG_TYPE_REGIST_RESPOND,      //注册回复
 
-    ENUM_MSG_TYPE_LOGIN_REQUEST,     //登录请求
-    ENUM_MSG_TYPE_LOGIN_RESPOND,     //登录回复
+    ENUM_MSG_TYPE_LOGIN_REQUEST,        //登录请求
+    ENUM_MSG_TYPE_LOGIN_RESPOND,       //登录回复
 
     ENUM_MSG_TYPE_ALL_ONLINE_REQUEST,  //查看所有的在线用户请求
     ENUM_MSG_TYPE_ALL_ONLINE_RESPOND,   //查看所有在线用户回复
@@ -57,8 +61,11 @@ enum ENUM_MSG_TYPE
     ENUM_MSG_TYPE_PRIVATE_CHAT_REQUEST,  //私聊请求
     ENUM_MSG_TYPE_PRIVATE_CHAT_RESPOND,  //私聊回复
 
-    ENUM_MSG_TYPE_GROUP_CHAT_REQUEST,  //群聊请求
-    ENUM_MSG_TYPE_GROUP_CHAT_RESPOND,  //群聊回复
+    ENUM_MSG_TYPE_GROUP_CHAT_REQUEST,    //群聊请求
+    ENUM_MSG_TYPE_GROUP_CHAT_RESPOND,    //群聊回复
+
+    ENUM_MSG_TYPE_CREATE_DIR_REQUEST,   //创建文件夹请求
+    ENUM_MSG_TYPE_CREATE_DIR_RESPOND,   //创建文件夹回复
 
     // ENUM_MSG_TYPE_RREQUESE,
     // ENUM_MSG_TYPE_RESPOND,

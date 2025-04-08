@@ -65,6 +65,11 @@ QString TcpCLient::loginName()
     return m_strLoginName;
 }
 
+QString TcpCLient::curPath()
+{
+    return m_strCurPath;
+}
+
 void TcpCLient::showConnect()
 {
     QMessageBox::information(this, "连接服务器", "连接服务器成功");
@@ -96,6 +101,7 @@ void TcpCLient::recvMsg()
     {
         if(0 == strcmp(pdu->caData, LOGIN_OK))
         {
+            m_strCurPath = QString("./%1").arg(m_strLoginName);
             QMessageBox::information(this, "登录", LOGIN_OK);
             OpeWidget::getInstance().show();
             this->hide();   //隐藏登陆界面
@@ -195,6 +201,11 @@ void TcpCLient::recvMsg()
     case ENUM_MSG_TYPE_GROUP_CHAT_REQUEST:
     {
         OpeWidget::getInstance().getFriend()->updateGroupMsg(pdu);
+        break;
+    }
+    case ENUM_MSG_TYPE_CREATE_DIR_RESPOND:
+    {
+        QMessageBox::information(this, "创建文件夹", pdu->caData);
         break;
     }
     default:

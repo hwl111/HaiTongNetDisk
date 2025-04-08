@@ -24,6 +24,7 @@ public:
     static TcpCLient &getInstance();
     QTcpSocket &getTcpSocket();
     QString loginName();        //获得登录用户名
+    QString curPath();          //获得当前路径
 
 public slots:
     void showConnect();
@@ -47,5 +48,6 @@ private:
     QTcpSocket m_tcpSocket;
 
     QString m_strLoginName;          //保存登录的用户名
+    QString m_strCurPath;            //记录当前文件路径
 };
 #endif // TCPCLIENT_H
