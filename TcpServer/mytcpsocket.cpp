@@ -2,7 +2,7 @@
 #include <QDebug>
 #include"mytcpserver.h"
 #include<QDir>
-
+#include<QFileInfoList>
 MyTcpSocket::MyTcpSocket()
 {
     connect(this, SIGNAL(readyRead())
@@ -288,7 +288,44 @@ void MyTcpSocket::recvMsg()  //接收数据
         respdu = NULL;
         break;
     }
+    case ENUM_MSG_TYPE_FLUSH_FILE_REQUEST:
+    {
+        char *pCurPath = new char[pdu->uiMSgLen];
+        memcpy(pCurPath, pdu->caMsg, pdu->uiMSgLen);
+        QDir dir(pCurPath);
+        QFileInfoList fileInfoList = dir.entryInfoList();  //获得文件信息
+        int iFileCount = fileInfoList.size();              //获得文件个数
+        PDU *respdu = mkPDU(sizeof(FileInfo)*iFileCount);   //防止显示.和..文件夹
+        respdu->uiMsgType = ENUM_MSG_TYPE_FLUSH_FILE_RESPOND;
+        FileInfo *pFileInfo = NULL;
+        QString strFileName;                                //保存文件名
+        for(int i=0;i<iFileCount;i++)
+        {
+            // if(QString(".") == fileInfoList[i].fileName() || QString("..") == fileInfoList[i].fileName())
+            // {
+            //     continue;
+            // }
+            pFileInfo = (FileInfo*)(respdu->caMsg) + i;
+            strFileName = fileInfoList[i].fileName();        //获得文件名
 
+            memcpy(pFileInfo->caFileName, strFileName.toStdString().c_str(),strFileName.size());
+            if(fileInfoList[i].isDir())
+            {
+                //如果是文件夹
+                pFileInfo->iFileType = 0;    //0表示是一个文件夹
+
+            }
+            else if(fileInfoList[i].isFile())
+            {
+                //是一个常规文件
+                pFileInfo->iFileType = 1;
+            }
+        }
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
     default:
         break;
     }

@@ -39,7 +39,8 @@ Book::Book(QWidget *parent)
 
     connect(m_pCreateDirPB, SIGNAL(clicked(bool))
             , this, SLOT(createDir()));
-
+    connect(m_pFlushFilePB, SIGNAL(clicked(bool))
+            , this, SLOT(flushFile()));
 }
 
 void Book::createDir()   //创建文件夹
@@ -69,5 +70,45 @@ void Book::createDir()   //创建文件夹
     else
     {
         QMessageBox::warning(this,"新建文件夹", "文件夹名字不能为空");
+    }
+}
+
+void Book::flushFile()
+{
+    QString strCurPath = TcpCLient::getInstance().curPath();  //获得当前路径
+    PDU *pdu = mkPDU(strCurPath.size() + 1);
+    pdu->uiMsgType = ENUM_MSG_TYPE_FLUSH_FILE_REQUEST;
+    strncpy((char*)pdu->caMsg,strCurPath.toStdString().c_str(), strCurPath.size());
+    TcpCLient::getInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen);      //发送给服务器
+    free(pdu);
+    pdu = NULL;
+}
+
+void Book::updateFileList(const PDU *pdu)
+{
+    if(pdu == NULL)
+    {
+        return;
+    }
+
+    m_pBookListW->clear();  //防止重复显示
+
+    FileInfo *pFileInfo = NULL;
+    int iCount = pdu->uiMSgLen/sizeof(FileInfo);
+    for(int i=0;i<iCount;i++)
+    {
+        pFileInfo = (FileInfo*)(pdu->caMsg) + i;
+        //if(pFileInfo->caFileName != QString(".") && pFileInfo->caFileName != QString(".."))
+        QListWidgetItem *pItem = new QListWidgetItem;
+        if(pFileInfo->iFileType == 0)
+        {
+            pItem->setIcon(QIcon(QPixmap(":/map/dir.jpg")));  //设置图标
+        }
+        else if(pFileInfo->iFileType == 1)
+        {
+            pItem->setIcon(QIcon(QPixmap(":/map/reg.jpg")));
+        }
+        pItem->setText(pFileInfo->caFileName);   //设置名字
+        m_pBookListW->addItem(pItem);
     }
 }

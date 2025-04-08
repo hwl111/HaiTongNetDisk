@@ -68,10 +68,19 @@ enum ENUM_MSG_TYPE
     ENUM_MSG_TYPE_CREATE_DIR_REQUEST,   //创建文件夹请求
     ENUM_MSG_TYPE_CREATE_DIR_RESPOND,   //创建文件夹回复
 
+    ENUM_MSG_TYPE_FLUSH_FILE_REQUEST,   //刷新文件请求
+    ENUM_MSG_TYPE_FLUSH_FILE_RESPOND,   //刷新文件回复
+
     // ENUM_MSG_TYPE_RREQUESE,
     // ENUM_MSG_TYPE_RESPOND,
 
     ENUM_MSG_TYPE_MAX=0x00ffffff   //最大占32位
+};
+
+struct FileInfo
+{
+    char caFileName[32];   //文件名字
+    int iFileType;         //文件类型
 };
 
 
