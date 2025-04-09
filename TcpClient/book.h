@@ -7,6 +7,7 @@
 #include<QHBoxLayout>
 #include<QVBoxLayout>
 #include"protocol.h"
+#include<QTimer>
 
 class Book : public QWidget
 {
@@ -31,6 +32,9 @@ private:
     QPushButton *m_pShareFilePB;     //分享文件
 
     QString m_strEnterDir;           //保存进入的文件夹
+    QString m_strUploadFilePath;     //保存上传文件的路径
+
+    QTimer *m_pTimer;                //上传文件定时器
 
 public slots:
     void createDir();                //创建文件夹
@@ -40,6 +44,10 @@ public slots:
     void renameFile();                            //重命名文件
     void enterDir(const  QModelIndex &index);     //双击进入文件夹
     void returnPre();                             //返回上级目录
+    void delRegFile();                            //删除常规文件
+    void uploadFile();                            //上传文件
+
+    void uploadFileData();                        //上传文件数据
 
 
 

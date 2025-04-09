@@ -47,7 +47,10 @@ constexpr auto qt_meta_stringdata_CLASSBookENDCLASS = QtMocHelpers::stringData(
     "enterDir",
     "QModelIndex",
     "index",
-    "returnPre"
+    "returnPre",
+    "delRegFile",
+    "uploadFile",
+    "uploadFileData"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -60,7 +63,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSBookENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -68,13 +71,16 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSBookENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   56,    2, 0x0a,    1 /* Public */,
-       3,    0,   57,    2, 0x0a,    2 /* Public */,
-       4,    1,   58,    2, 0x0a,    3 /* Public */,
-       7,    0,   61,    2, 0x0a,    5 /* Public */,
-       8,    0,   62,    2, 0x0a,    6 /* Public */,
-       9,    1,   63,    2, 0x0a,    7 /* Public */,
-      12,    0,   66,    2, 0x0a,    9 /* Public */,
+       1,    0,   74,    2, 0x0a,    1 /* Public */,
+       3,    0,   75,    2, 0x0a,    2 /* Public */,
+       4,    1,   76,    2, 0x0a,    3 /* Public */,
+       7,    0,   79,    2, 0x0a,    5 /* Public */,
+       8,    0,   80,    2, 0x0a,    6 /* Public */,
+       9,    1,   81,    2, 0x0a,    7 /* Public */,
+      12,    0,   84,    2, 0x0a,    9 /* Public */,
+      13,    0,   85,    2, 0x0a,   10 /* Public */,
+      14,    0,   86,    2, 0x0a,   11 /* Public */,
+      15,    0,   87,    2, 0x0a,   12 /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -83,6 +89,9 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSBookENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 10,   11,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
 
        0        // eod
@@ -112,6 +121,12 @@ Q_CONSTINIT const QMetaObject Book::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QModelIndex &, std::false_type>,
         // method 'returnPre'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'delRegFile'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'uploadFile'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'uploadFileData'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -130,6 +145,9 @@ void Book::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void *
         case 4: _t->renameFile(); break;
         case 5: _t->enterDir((*reinterpret_cast< std::add_pointer_t<QModelIndex>>(_a[1]))); break;
         case 6: _t->returnPre(); break;
+        case 7: _t->delRegFile(); break;
+        case 8: _t->uploadFile(); break;
+        case 9: _t->uploadFileData(); break;
         default: ;
         }
     }
@@ -154,13 +172,13 @@ int Book::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 10;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 10)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        _id -= 10;
     }
     return _id;
 }
