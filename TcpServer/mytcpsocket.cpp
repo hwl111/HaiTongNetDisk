@@ -443,7 +443,7 @@ void MyTcpSocket::recvMsg()  //接收数据
             //是常规文件
             respdu = mkPDU(0);
             respdu->uiMsgType = ENUM_MSG_TYPE_ENTER_DIR_RESPOND;
-            strncpy(pdu->caData, ENTER_DIR_FAILURED, strlen(ENTER_DIR_FAILURED));
+            strcpy(pdu->caData, ENTER_DIR_FAILURED);
             write((char*)respdu, respdu->uiPDULen);
             free(respdu);
             respdu = NULL;

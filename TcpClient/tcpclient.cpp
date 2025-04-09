@@ -70,6 +70,11 @@ QString TcpCLient::curPath()
     return m_strCurPath;
 }
 
+void TcpCLient::setCurPath(QString strCurPath)
+{
+    m_strCurPath = strCurPath;
+}
+
 void TcpCLient::showConnect()
 {
     QMessageBox::information(this, "连接服务器", "连接服务器成功");
@@ -208,7 +213,7 @@ void TcpCLient::recvMsg()
         QMessageBox::information(this, "创建文件夹", pdu->caData);
         break;
     }
-    case ENUM_MSG_TYPE_FLUSH_FILE_RESPOND:
+    case ENUM_MSG_TYPE_FLUSH_FILE_RESPOND:   //刷新文件
     {
         OpeWidget::getInstance().getBook()->updateFileList(pdu);
 
@@ -216,7 +221,8 @@ void TcpCLient::recvMsg()
         if(!strEnterDir.isEmpty())
         {
             m_strCurPath = m_strCurPath + "/" + strEnterDir;  //更新路径
-            qDebug()<<"enter dir:"<<m_strCurPath;
+            OpeWidget::getInstance().getBook()->clearEnterDir();
+            //qDebug()<<"enter dir:"<<m_strCurPath;
         }
 
         break;
@@ -234,7 +240,7 @@ void TcpCLient::recvMsg()
     case ENUM_MSG_TYPE_ENTER_DIR_RESPOND:
     {
         OpeWidget::getInstance().getBook()->clearEnterDir();
-        QMessageBox::warning(this, "进入文件夹", pdu->caData);
+        QMessageBox::information(this, "进入文件夹", pdu->caData);
         break;
     }
     default:

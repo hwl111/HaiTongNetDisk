@@ -13,6 +13,8 @@ class Book : public QWidget
     Q_OBJECT
 public:
     explicit Book(QWidget *parent = nullptr);
+    void clearEnterDir();                         //清空保存的文件路径
+    QString enterDir();                           //获得进入的文件夹路径
 
 signals:
 
@@ -37,8 +39,8 @@ public slots:
     void delDir();                                //删除文件夹
     void renameFile();                            //重命名文件
     void enterDir(const  QModelIndex &index);     //双击进入文件夹
-    void clearEnterDir();                         //清空保存的文件路径
-    QString enterDir();                           //获得进入的文件夹路径
+    void returnPre();                             //返回上级目录
+
 
 
 };

@@ -49,6 +49,8 @@ Book::Book(QWidget *parent)
             , this, SLOT(renameFile()));
     connect(m_pBookListW, SIGNAL(doubleClicked(QModelIndex))
             ,this, SLOT(enterDir(QModelIndex)));
+    connect(m_pReturnPB, SIGNAL(clicked(bool))
+            , this, SLOT(returnPre()));
 }
 
 void Book::createDir()   //创建文件夹
@@ -186,6 +188,27 @@ void Book::enterDir(const QModelIndex &index)
     TcpCLient::getInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen);      //发送给服务器
     free(pdu);
     pdu = NULL;
+}
+
+void Book::returnPre()
+{
+    QString strCurPath = TcpCLient::getInstance().curPath();  //获得当前路径
+    QString strRootPath = "./" + TcpCLient::getInstance().loginName();
+    if(strCurPath == strRootPath)
+    {
+        QMessageBox::warning(this, "返回", "返回失败:已经在开始文件夹中");
+    }
+    else
+    {//  "./aa/bb/cc"  ---> "./aa/bb"
+        int index = strCurPath.lastIndexOf('/');   //找最后一个斜杠
+        strCurPath.remove(index, strCurPath.size() - index);  //删除最后一个斜杠后的内容
+        TcpCLient::getInstance().setCurPath(strCurPath);
+
+        clearEnterDir();    //清空，防止返回的时候拼接
+
+        flushFile();
+    }
+
 }
 
 void Book::clearEnterDir()

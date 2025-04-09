@@ -25,6 +25,7 @@ public:
     QTcpSocket &getTcpSocket();
     QString loginName();        //获得登录用户名
     QString curPath();          //获得当前路径
+    void setCurPath(QString strCurPath);          //保存当前路径
 
 public slots:
     void showConnect();
