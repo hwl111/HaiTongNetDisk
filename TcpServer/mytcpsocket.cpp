@@ -395,6 +395,62 @@ void MyTcpSocket::recvMsg()  //接收数据
         respdu = NULL;
         break;
     }
+    case ENUM_MSG_TYPE_ENTER_DIR_REQUEST:
+    {
+        char caEnterName[32] = {'\0'};
+        strncpy(caEnterName, pdu->caData, 32);
+
+        char *pPath = new char[pdu->uiMSgLen];
+        memcpy(pPath, pdu->caMsg, pdu->uiMSgLen);
+
+        QString strPath = QString("%1/%2").arg(pPath).arg(caEnterName);
+        QFileInfo fileInfo(strPath);
+        PDU *respdu = NULL;
+        if(fileInfo.isDir())
+        {
+            //是文件夹
+            QDir dir(strPath);
+            QFileInfoList fileInfoList = dir.entryInfoList();  //获得文件信息
+            int iFileCount = fileInfoList.size();              //获得文件个数
+            respdu = mkPDU(sizeof(FileInfo)*iFileCount);   //防止显示.和..文件夹
+            respdu->uiMsgType = ENUM_MSG_TYPE_FLUSH_FILE_RESPOND;
+            FileInfo *pFileInfo = NULL;
+            QString strFileName;                                //保存文件名
+            for(int i=0;i<iFileCount;i++)
+            {
+                pFileInfo = (FileInfo*)(respdu->caMsg) + i;
+                strFileName = fileInfoList[i].fileName();        //获得文件名
+
+                memcpy(pFileInfo->caFileName, strFileName.toStdString().c_str(),strFileName.size());
+                if(fileInfoList[i].isDir())
+                {
+                    //如果是文件夹
+                    pFileInfo->iFileType = 0;    //0表示是一个文件夹
+
+                }
+                else if(fileInfoList[i].isFile())
+                {
+                    //是一个常规文件
+                    pFileInfo->iFileType = 1;
+                }
+            }
+            write((char*)respdu, respdu->uiPDULen);
+            free(respdu);
+            respdu = NULL;
+        }
+        else if(fileInfo.isFile())
+        {
+            //是常规文件
+            respdu = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_ENTER_DIR_RESPOND;
+            strncpy(pdu->caData, ENTER_DIR_FAILURED, strlen(ENTER_DIR_FAILURED));
+            write((char*)respdu, respdu->uiPDULen);
+            free(respdu);
+            respdu = NULL;
+        }
+
+        break;
+    }
 
     default:
         break;

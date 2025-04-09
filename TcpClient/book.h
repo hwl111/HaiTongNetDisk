@@ -28,12 +28,17 @@ private:
     QPushButton *m_pDelFilePB;       //删除文件
     QPushButton *m_pShareFilePB;     //分享文件
 
+    QString m_strEnterDir;           //保存进入的文件夹
+
 public slots:
     void createDir();                //创建文件夹
     void flushFile();                //刷新文件
     void updateFileList(const PDU * pdu);         //刷新文件列表
     void delDir();                                //删除文件夹
     void renameFile();                            //重命名文件
+    void enterDir(const  QModelIndex &index);     //双击进入文件夹
+    void clearEnterDir();                         //清空保存的文件路径
+    QString enterDir();                           //获得进入的文件夹路径
 
 
 };

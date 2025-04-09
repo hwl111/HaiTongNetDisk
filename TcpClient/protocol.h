@@ -37,6 +37,7 @@ typedef unsigned int uint;
 #define RENAME_FILE_OK "rename file succeed"
 #define RENAME_FILE_FAILURED "rename file failured"
 
+#define ENTER_DIR_FAILURED "enter dir failured:is reguler file"
 
 enum ENUM_MSG_TYPE
 {
@@ -82,6 +83,9 @@ enum ENUM_MSG_TYPE
 
     ENUM_MSG_TYPE_RENAME_FILE_REQUEST,  //重命名请求
     ENUM_MSG_TYPE_RENAME_FILE_RESPOND,  //重命名回复
+
+    ENUM_MSG_TYPE_ENTER_DIR_REQUEST,    //进入文件夹请求
+    ENUM_MSG_TYPE_ENTER_DIR_RESPOND,    //进入文件夹回复
 
 
     // ENUM_MSG_TYPE_RREQUESE,

@@ -5,11 +5,13 @@
 Book::Book(QWidget *parent)
     : QWidget{parent}
 {
+    m_strEnterDir.clear();             //清空保存进入的文件夹
+
     m_pBookListW = new QListWidget;
     m_pReturnPB = new QPushButton("返回");
     m_pCreateDirPB = new QPushButton("创建文件夹");
     m_pDelDirPB = new QPushButton("删除文件夹");
-    m_pRenamePB = new QPushButton("重命名文件夹");
+    m_pRenamePB = new QPushButton("重命名文件");
     m_pFlushFilePB = new QPushButton("刷新文件");
 
     QVBoxLayout *pDirVBL = new QVBoxLayout;   //垂直布局
@@ -45,6 +47,8 @@ Book::Book(QWidget *parent)
             , this, SLOT(delDir()));
     connect(m_pRenamePB, SIGNAL(clicked(bool))
             , this, SLOT(renameFile()));
+    connect(m_pBookListW, SIGNAL(doubleClicked(QModelIndex))
+            ,this, SLOT(enterDir(QModelIndex)));
 }
 
 void Book::createDir()   //创建文件夹
@@ -166,4 +170,30 @@ void Book::renameFile()
             QMessageBox::warning(this,"重命名文件", "新文件名不能为空");
         }
     }
+}
+
+void Book::enterDir(const QModelIndex &index)
+{
+    QString strDirName = index.data().toString();  //获得双击的文件名
+    //qDebug()<<strDirName;
+    m_strEnterDir = strDirName;
+    QString strCurPath = TcpCLient::getInstance().curPath();  //当前所在目录
+    PDU *pdu = mkPDU(strCurPath.size() + 1);
+    pdu->uiMsgType = ENUM_MSG_TYPE_ENTER_DIR_REQUEST;
+    strncpy(pdu->caData, strDirName.toStdString().c_str(), strDirName.size());
+    memcpy(pdu->caMsg, strCurPath.toStdString().c_str(), strCurPath.size());
+
+    TcpCLient::getInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen);      //发送给服务器
+    free(pdu);
+    pdu = NULL;
+}
+
+void Book::clearEnterDir()
+{
+    m_strEnterDir.clear();
+}
+
+QString Book::enterDir()
+{
+    return m_strEnterDir;
 }
