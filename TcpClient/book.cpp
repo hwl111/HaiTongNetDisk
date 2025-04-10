@@ -9,6 +9,7 @@ Book::Book(QWidget *parent)
 {
     m_strEnterDir.clear();             //清空保存进入的文件夹
 
+    m_bDownload = false;
     m_pTimer = new QTimer;
 
     m_pBookListW = new QListWidget;
@@ -61,6 +62,8 @@ Book::Book(QWidget *parent)
             ,this, SLOT(uploadFile()));
     connect(m_pTimer, SIGNAL(timeout())
             , this, SLOT(uploadFileData()));
+    connect(m_pDownLoadPB, SIGNAL(clicked(bool))
+            , this, SLOT(downloadFile()));
 }
 
 void Book::createDir()   //创建文件夹
@@ -287,7 +290,7 @@ void Book::uploadFileData()    //上传文件
         ret = file.read(pBuffer, 4096);  //把数据读入pBuffer
         if(ret > 0 && ret <= 4096)
         {
-            TcpCLient::getInstance().getTcpSocket().write(pBuffer, ret);  //发送数据给服务器
+            TcpCLient::getInstance().getTcpSocket().write((char*)pBuffer, ret);  //发送数据给服务器
         }
         else if(ret == 0)
         {
@@ -304,6 +307,39 @@ void Book::uploadFileData()    //上传文件
     pBuffer = NULL;
 }
 
+void Book::downloadFile()
+{
+    QListWidgetItem *pItem =  m_pBookListW->currentItem();
+    if(pItem == NULL)
+    {
+        QMessageBox::warning(this, "下载文件","请选择要下载的文件");
+    }
+    else
+    {
+        QString strSaveFilePath = QFileDialog::getSaveFileName();  //选择要保存文件的路径
+        if(strSaveFilePath.isEmpty())
+        {
+            QMessageBox::warning(this, "下载文件", "请指定要保存的文件位置");
+            m_strSaveFilePath.clear();
+        }
+        else
+        {
+            m_strSaveFilePath = strSaveFilePath;
+        }
+
+        QString strCurPath = TcpCLient::getInstance().curPath();  //获得当前路径
+        PDU *pdu = mkPDU(strCurPath.size() + 1);
+        pdu->uiMsgType = ENUM_MSG_TYPE_DOWNLOAD_FILE_REQUEST;
+        QString strFileName = pItem->text();  //获得文件名
+        strcpy(pdu->caData, strFileName.toStdString().c_str());
+        memcpy(pdu->caMsg, strCurPath.toStdString().c_str(), strCurPath.size());
+        TcpCLient::getInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen);
+
+        free(pdu);
+        pdu = NULL;
+    }
+}
+
 void Book::clearEnterDir()
 {
     m_strEnterDir.clear();
@@ -312,4 +348,19 @@ void Book::clearEnterDir()
 QString Book::enterDir()
 {
     return m_strEnterDir;
+}
+
+void Book::setDownloadStatus(bool status)
+{
+    m_bDownload = status;
+}
+
+bool Book::getDownloadStatus()
+{
+    return m_bDownload;
+}
+
+QString Book::getSaveFilePath()
+{
+    return m_strSaveFilePath;
 }

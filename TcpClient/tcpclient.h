@@ -50,5 +50,6 @@ private:
 
     QString m_strLoginName;          //保存登录的用户名
     QString m_strCurPath;            //记录当前文件路径
+    QFile m_file;                    //保存要下载文件
 };
 #endif // TCPCLIENT_H

@@ -11,6 +11,9 @@ MyTcpSocket::MyTcpSocket()
             ,this, SLOT(client_close()));  //只要断开连接就调用client_close()
 
     m_bUpload = false;
+    m_pTimer = new QTimer;
+    connect(m_pTimer, SIGNAL(timeout())
+            ,this, SLOT(sendFileToClient()));
 }
 
 QString MyTcpSocket::getName()
@@ -516,10 +519,36 @@ void MyTcpSocket::recvMsg()  //接收数据
                 m_iTotal = fileSize;  //总的大小
                 m_iRecved = 0;        //接收为0
             }
+            break;
+        }
+        case ENUM_MSG_TYPE_DOWNLOAD_FILE_REQUEST:
+        {
+            char caFileName[32] = {'\0'};
+            strcpy(caFileName, pdu->caData);    //拷贝要下载的文件名
+            char *pPath = new char[pdu->uiMSgLen];
+            memcpy(pPath, pdu->caMsg, pdu->uiMSgLen);
+            QString strPath = QString("%1/%2").arg(pPath).arg(caFileName);
+
+            delete [] pPath;
+            pPath = NULL;
+
+            QFileInfo fileInfo(strPath);
+            qint64 fileSize = fileInfo.size();  //获得文件大小
+            PDU *respdu = mkPDU(0);
+            respdu->uiMsgType = ENUM_MSG_TYPE_DOWNLOAD_FILE_REPOND;
+            sprintf(respdu->caData, "%s %lld", caFileName, &fileSize);
+            write((char*)respdu, respdu->uiPDULen);
+            free(respdu);
+            respdu = NULL;
+
+            //打开文件
+            m_file.setFileName(strPath);
+            m_file.open(QIODevice::ReadOnly);
+            //启动计时器
+            m_pTimer->start(1000);
 
             break;
         }
-
 
         default:
             break;
@@ -563,4 +592,32 @@ void MyTcpSocket::client_close()
 {
     OpeDB::getInstance().handleOffline(m_strName.toStdString().c_str());
     emit offline(this);
+}
+
+void MyTcpSocket::sendFileToClient()
+{
+    char *pData = new char[4096];
+    qint64 ret = 0;
+    while(true)
+    {
+        ret = m_file.read(pData, 4096);
+        if(ret > 0 && ret <= 4096)
+        {
+            write(pData, ret);
+        }
+        else if(ret == 0)
+        {
+            //发送完成
+            m_file.close();
+            break;
+        }
+        else if(ret < 0)
+        {
+            qDebug()<<"发送文件给客户端过程失败";
+            m_file.close();
+            break;
+        }
+    }
+    delete [] pData;
+    m_pTimer->stop();//关闭定时器
 }
